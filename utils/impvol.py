@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-import sys
-from lets_be_rational import implied_volatility_from_a_transformed_rational_guess
-
+# -*- coding: utf-8 -*-sys
+from lets_be_rational import implied_volatility_from_a_transformed_rational_gues
 from scipy.stats import norm
-from scipy.optimize import brentq, fminbound
-
 import numpy as np
 
 def black_scholes(tau, forward, strike, rate, vol):
