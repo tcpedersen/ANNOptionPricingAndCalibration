@@ -7,8 +7,9 @@ from keras.initializers import VarianceScaling
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
+from utils.load_data import load_data
+
 import numpy as np
-from datetime import datetime
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -28,30 +29,8 @@ def lr_schedule(n, alpha):
 
 # =============================================================================
 # === Load data
-# Change the paths to training-data/realistic/input-grid-train-real.csv etc.
-# to train on the realistic parameter space instead.
-
-output_grid = np.loadtxt("training-data/output-grid.csv")
-
-# Training data
-X_raw = np.loadtxt("training-data/large/input-grid-train-large.csv")
-Y_raw = np.loadtxt("training-data/large/impvol-train-large.csv")
-
-# Only use implied volatilities where there was no failure (see 
-# datageneration.py) for details.
-idx_all_pos_train = (Y_raw > 0).all(axis=1)
-X = X_raw[idx_all_pos_train, :]
-Y = Y_raw[idx_all_pos_train, :]
-
-# Test data
-X_test_raw = np.loadtxt("training-data/large/input-grid-test-large.csv") 
-Y_test_raw = np.loadtxt("training-data/large/impvol-test-large.csv")
-
-# Only use implied volatilities where there was no failure (see 
-# datageneration.py) for details.
-idx_all_pos_test = (Y_test_raw > 0).all(axis=1)
-X_test = X_test_raw[idx_all_pos_test, :]
-Y_test = Y_test_raw[idx_all_pos_test, :]
+# Either realistic or large
+output_grid, X, Y, X_test, Y_test = load_data("realistic")
 
 # =============================================================================
 # === Extract and set variables for training
@@ -73,8 +52,8 @@ norm_x_test = norm_features.transform(X_test)
 norm_y_test = norm_labels.transform(Y_test)
 
 # ==============================================================================
-# === Fit model (note the model can be saved using 
-# model.save( -- insert path --)
+# === Fit model 
+# The model can be saved using model.save( -- insert path --)
 model = Sequential()
 model.add(Dense(num_hidden_units, activation='softplus', use_bias=True, \
                 input_dim=num_input_units, 
